@@ -1,16 +1,40 @@
+import 'package:uuid/uuid.dart';
 
 class TodoModel {
-  late int id;
-  String title = '';
-  DateTime Date = DateTime.now();
-  bool isCompleted;
+  int? id = DateTime.now().hashCode;
+  String? docId;
+  final String? title;
+  DateTime? date = DateTime.now();
+  late bool isCompleted;
 
   TodoModel(
-      {required this.title, required this.Date, this.isCompleted = false});
+      {this.id,
+      this.docId,
+      required this.title,
+      this.date,
+      this.isCompleted = false});
 
   void toggle() {
     this.isCompleted = !this.isCompleted;
   }
 
-  TodoModel copyWith(String title, DateTime dateTime  ) => TodoModel(title: title,Date: dateTime);
+  TodoModel copyWith(int id, String title, DateTime dateTime) =>
+      TodoModel(id: id, title: title, date: dateTime);
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'docId': docId,
+      'title': title,
+      'date': date,
+      'isCompleted': isCompleted,
+    };
+  }
+
+  TodoModel.fromJson(Map<String, dynamic> firebaseFireStore)
+      : id = firebaseFireStore['id'],
+        docId = firebaseFireStore['docId'],
+        title = firebaseFireStore['title'],
+        date = firebaseFireStore['date']?.toDate(),
+        isCompleted = firebaseFireStore['isCompleted'];
 }

@@ -1,9 +1,15 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_todo/modul/provider/TodosProvider.dart';
 import 'package:flutter_todo/modul/screen/homeToDo.dart';
+import 'package:flutter_todo/setup/locator.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding
+      .ensureInitialized(); //widget dc khoi tao truoc khi app run
+  await Firebase.initializeApp();
+  setupLocator();
   runApp(MyApp());
 }
 
@@ -18,7 +24,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: ScreenList(),
+        home: MainScreen(),
       ),
     );
   }

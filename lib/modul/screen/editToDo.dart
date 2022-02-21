@@ -6,10 +6,8 @@ import 'package:provider/provider.dart';
 
 class EditToDo extends StatefulWidget {
   TodoModel todoModel;
-  int index;
 
-  EditToDo({Key? key, required this.todoModel, required this.index})
-      : super(key: key);
+  EditToDo({Key? key, required this.todoModel}) : super(key: key);
 
   @override
   _EditToDoState createState() => _EditToDoState();
@@ -19,25 +17,23 @@ class _EditToDoState extends State<EditToDo> {
   late TextEditingController _textTitleController = TextEditingController();
   late TextEditingController _textDateController = TextEditingController();
   List<TodoModel> _todoModel = [];
-  int index = 0;
   DateTime _time = DateTime.now();
   String format(DateTime time) {
     String dateString = DateFormat('dd-MM-yyyy').format(time);
     return dateString;
   }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _textTitleController = TextEditingController(text: widget.todoModel.title);
-    _textDateController = TextEditingController(text: widget.todoModel.Date.toString());
-    index = widget.index;
+    _textDateController =
+        TextEditingController(text: widget.todoModel.date.toString());
   }
 
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Update'),
@@ -103,10 +99,14 @@ class _EditToDoState extends State<EditToDo> {
                     backgroundColor:
                         MaterialStateProperty.all(Colors.redAccent)),
                 onPressed: () {
-                  Provider.of<TodosProvider>(context, listen: false).editToDo(
+                  TodoModel todoModel1 = TodoModel(
                       title: _textTitleController.text,
-                      dateTime: _time,
-                      index: index);
+                      docId: widget.todoModel.docId,
+                      isCompleted: widget.todoModel.isCompleted,
+                      id: widget.todoModel.id,
+                      date: convertDate(_textDateController.text));
+                  Provider.of<TodosProvider>(context, listen: false)
+                      .editToDo(todoModel1);
                   Navigator.pop(context);
                 },
                 child: Container(
@@ -125,5 +125,8 @@ class _EditToDoState extends State<EditToDo> {
     );
   }
 
-
+  DateTime convertDate(String time) {
+    var parsedDate = DateTime.parse(time);
+    return parsedDate;
+  }
 }

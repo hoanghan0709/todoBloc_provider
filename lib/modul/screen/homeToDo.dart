@@ -1,10 +1,81 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_todo/modul/provider/TodosProvider.dart';
+import 'package:flutter_todo/modul/screen/Completed.dart';
 import 'package:flutter_todo/modul/screen/addToDo.dart';
 import 'package:flutter_todo/modul/screen/editToDo.dart';
 
 import 'package:intl/intl.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
+
+class MainScreen extends StatefulWidget {
+  MainScreen({Key? key}) : super(key: key);
+
+  @override
+  State<MainScreen> createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+  @override
+  Widget build(BuildContext context) {
+    PersistentTabController _controller;
+    _controller = PersistentTabController(initialIndex: 0);
+    return PersistentTabView(
+      context,
+      controller: _controller,
+      screens: _buildScreens(),
+      items: _navBarsItems(),
+      confineInSafeArea: true,
+      backgroundColor: Colors.white, // Default is Colors.white.
+      handleAndroidBackButtonPress: true, // Default is true.
+      resizeToAvoidBottomInset:
+          true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
+      stateManagement: true, // Default is true.
+      hideNavigationBarWhenKeyboardShows:
+          true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
+      decoration: NavBarDecoration(
+        borderRadius: BorderRadius.circular(10.0),
+        colorBehindNavBar: Colors.white,
+      ),
+      popAllScreensOnTapOfSelectedTab: true,
+      popActionScreens: PopActionScreensType.all,
+      itemAnimationProperties: ItemAnimationProperties(
+        // Navigation Bar's items animation properties.
+        duration: Duration(milliseconds: 200),
+        curve: Curves.ease,
+      ),
+      screenTransitionAnimation: ScreenTransitionAnimation(
+        // Screen transition animation on change of selected tab.
+        animateTabTransition: true,
+        curve: Curves.ease,
+        duration: Duration(milliseconds: 200),
+      ),
+      navBarStyle:
+          NavBarStyle.style1, // Choose the nav bar style with this property.
+    );
+  }
+}
+
+List<Widget> _buildScreens() {
+  return [ScreenList(), ScreenCompleted()];
+}
+
+List<PersistentBottomNavBarItem> _navBarsItems() {
+  return [
+    PersistentBottomNavBarItem(
+      icon: Icon(Icons.home),
+      title: ("Home"),
+      activeColorPrimary: Colors.blue,
+      inactiveColorPrimary: Colors.blue,
+    ),
+    PersistentBottomNavBarItem(
+      icon: Icon(Icons.check),
+      title: ("Completed"),
+      activeColorPrimary: Colors.red,
+      inactiveColorPrimary: Colors.red,
+    ),
+  ];
+}
 
 class ScreenList extends StatefulWidget {
   const ScreenList({Key? key}) : super(key: key);
@@ -14,6 +85,13 @@ class ScreenList extends StatefulWidget {
 }
 
 class _ScreenListState extends State<ScreenList> {
+  @override
+  void initState() {
+    final provider = Provider.of<TodosProvider>(context, listen: false);
+    provider.init();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     //TodosProvider todosProvider = Provider.of<TodosProvider>(context)
@@ -57,7 +135,7 @@ class _ScreenListState extends State<ScreenList> {
                             direction: DismissDirection.endToStart,
                             onDismissed: (_) {
                               Provider.of<TodosProvider>(context, listen: false)
-                                  .removeTodo(index);
+                                  .removeTodo(value.getTodo[index].docId);
                             },
                             child: Card(
                               margin: const EdgeInsets.only(
@@ -65,7 +143,7 @@ class _ScreenListState extends State<ScreenList> {
                               child: ListTile(
                                 tileColor: Colors.black12,
                                 title: Text(
-                                  value.getTodo[index].title,
+                                  value.getTodo[index].title ?? '',
                                   style: TextStyle(
                                       decoration:
                                           value.getTodo[index].isCompleted ==
@@ -74,7 +152,7 @@ class _ScreenListState extends State<ScreenList> {
                                               : TextDecoration.lineThrough),
                                 ),
                                 subtitle: Text(
-                                    format(value.getTodo[index].Date),
+                                    format(value.getTodo[index].date),
                                     style: TextStyle(
                                         decoration:
                                             value.getTodo[index].isCompleted ==
@@ -90,14 +168,7 @@ class _ScreenListState extends State<ScreenList> {
                                     }
                                   },
                                   value: value.getTodo[index].isCompleted,
-                                )
-                                // value.getTodo[index].isCompleted != _isCheck
-                                //     ? Icon(Icons.check_box_outline_blank)
-                                //     : Icon(
-                                //   Icons.check_box,
-                                //   color: Colors.red,
-                                //),
-                                ,
+                                ),
                                 onTap: () {
                                   Provider.of<TodosProvider>(context,
                                           listen: false)
@@ -109,7 +180,6 @@ class _ScreenListState extends State<ScreenList> {
                                       (MaterialPageRoute(
                                           builder: (context) => EditToDo(
                                                 todoModel: value.getTodo[index],
-                                                index: index,
                                               ))));
                                 },
                               ),
@@ -134,8 +204,11 @@ class _ScreenListState extends State<ScreenList> {
         ));
   }
 
-  String format(DateTime time) {
-    String dateString = DateFormat('dd-MM-yyyy').format(time);
-    return dateString;
+  String format(DateTime? time) {
+    if (time != null) {
+      String dateString = DateFormat('dd-MM-yyyy').format(time);
+      return dateString;
+    }
+    return 'n/a';
   }
 }
