@@ -33,7 +33,7 @@ class _ScreenCompletedState extends State<ScreenCompleted> {
                       margin: const EdgeInsets.only(
                           left: 15.0, right: 15.0, bottom: 5.0),
                       child: ListTile(
-                        trailing: Icon(Icons.check),
+                        trailing: Icon(Icons.check,color: Colors.green,),
                         title: Text(value.getCompletedTodo[index].title ?? ''),
                         subtitle:
                             Text(format(value.getCompletedTodo[index].date)),

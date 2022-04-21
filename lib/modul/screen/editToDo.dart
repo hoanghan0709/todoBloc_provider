@@ -18,8 +18,9 @@ class _EditToDoState extends State<EditToDo> {
   late TextEditingController _textDateController = TextEditingController();
   List<TodoModel> _todoModel = [];
   DateTime _time = DateTime.now();
+
   String format(DateTime time) {
-    String dateString = DateFormat('dd-MM-yyyy').format(time);
+    String dateString = DateFormat('yyyy-MM-dd').format(time);
     return dateString;
   }
 
@@ -28,8 +29,7 @@ class _EditToDoState extends State<EditToDo> {
     // TODO: implement initState
     super.initState();
     _textTitleController = TextEditingController(text: widget.todoModel.title);
-    _textDateController =
-        TextEditingController(text: widget.todoModel.date.toString());
+    _textDateController = TextEditingController(text: widget.todoModel.date.toString());
   }
 
   @override
@@ -107,6 +107,7 @@ class _EditToDoState extends State<EditToDo> {
                       date: convertDate(_textDateController.text));
                   Provider.of<TodosProvider>(context, listen: false)
                       .editToDo(todoModel1);
+                       
                   Navigator.pop(context);
                 },
                 child: Container(
@@ -126,7 +127,7 @@ class _EditToDoState extends State<EditToDo> {
   }
 
   DateTime convertDate(String time) {
-    var parsedDate = DateTime.parse(time);
+    DateTime parsedDate = DateTime.parse(time);
     return parsedDate;
   }
 }

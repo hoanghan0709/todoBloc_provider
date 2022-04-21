@@ -18,6 +18,10 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
+    return bottomNavi(context);
+  }
+}
+Widget bottomNavi(BuildContext context){ 
     PersistentTabController _controller;
     _controller = PersistentTabController(initialIndex: 0);
     return PersistentTabView(
@@ -53,8 +57,8 @@ class _MainScreenState extends State<MainScreen> {
       navBarStyle:
           NavBarStyle.style1, // Choose the nav bar style with this property.
     );
-  }
 }
+ 
 
 List<Widget> _buildScreens() {
   return [ScreenList(), ScreenCompleted()];
@@ -94,11 +98,7 @@ class _ScreenListState extends State<ScreenList> {
 
   @override
   Widget build(BuildContext context) {
-    //TodosProvider todosProvider = Provider.of<TodosProvider>(context)
-    // khai bao nay la der no biet cai provider. Minh tac dong toi cai nay
-    // con cai Consumer la de xuat ra man hinh
-    // Provider giong Stream
-    // con Consumer giong StreamBuilder
+ 
 
     String pickOflength =
         '${Provider.of<TodosProvider>(context).countChecked()} of ${Provider.of<TodosProvider>(context).getLength()}';
@@ -177,9 +177,7 @@ class _ScreenListState extends State<ScreenList> {
                                 onLongPress: () {
                                   Navigator.push(
                                       context,
-                                      (MaterialPageRoute(
-                                          builder: (context) => EditToDo(
-                                                todoModel: value.getTodo[index],
+                                      (MaterialPageRoute(  builder: (context) => EditToDo( todoModel: value.getTodo[index],
                                               ))));
                                 },
                               ),
