@@ -95,7 +95,7 @@ class _AddToDoState extends State<AddToDo> {
           OutlinedButton(
               style: ButtonStyle(
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
+                      RoundedRectangleBorder( 
                           borderRadius: BorderRadius.circular(25.0),
                           side: BorderSide())),
                   backgroundColor: MaterialStateProperty.all(Colors.redAccent)),

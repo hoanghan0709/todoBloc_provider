@@ -39,6 +39,7 @@ class TodosProvider with ChangeNotifier {
     firebaseFirestore.streamTodo().listen((snapshot) {
       for (final change in snapshot.docChanges) {
         if (change.type == DocumentChangeType.added) {
+           
           final doc = change.doc.data() as Map<String, dynamic>;
 
           final todo = TodoModel.fromJson(doc);
